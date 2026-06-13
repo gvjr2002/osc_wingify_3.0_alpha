@@ -1,828 +1,1259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Start VWO SmartCode --> 
-<script referrerPolicy="no-referrer-when-downgrade" src="https://dev.visualwebsiteoptimizer.com/lib/30000283.js" id="vwoCode"></script> 
-<!-- End VWO SmartCode -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPA Application</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+<!-- Start Wingify SmartCode --> 
+<script src="https://edge.wingify.net/tag/1243602.js"></script> 
+<!-- End Wingify SmartCode -->
+   
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Trigger Testbed</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #2a2a3a;
+    --accent: #00ffcc;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #334155;
+    --glow: 0 0 20px rgba(0,255,204,0.3);
+    --glow2: 0 0 20px rgba(124,58,237,0.3);
+    --radius: 8px;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
 
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 100%;
-            padding: 40px;
-            backdrop-filter: blur(10px);
-            animation: slideUp 0.6s ease;
-        }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  html { scroll-behavior: smooth; }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-        .view {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
+  /* GRID NOISE BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,204,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,204,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        .view.active {
-            display: block;
-        }
+  /* ─── LAYOUT ─── */
+  #app { position: relative; z-index: 1; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+  header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
 
-        .header h1 {
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .logo {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo span { color: var(--text-muted); font-weight: 400; font-size: 12px; }
 
-        .header p {
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
+  .nav-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .nav-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-pill:hover, .nav-pill.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,255,204,0.06);
+  }
 
-        .note {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            color: #856404;
-        }
+  /* ─── EVENT LOG ─── */
+  #log-panel {
+    position: fixed;
+    bottom: 0; right: 0;
+    width: 380px;
+    height: 220px;
+    background: rgba(10,10,15,0.97);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .log-header {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+  .log-title {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .log-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
 
-        .note strong {
-            display: block;
-            margin-bottom: 5px;
-        }
+  #log-clear {
+    background: none; border: none; color: var(--text-muted);
+    font-family: var(--mono); font-size: 10px; cursor: pointer;
+    transition: color 0.2s;
+  }
+  #log-clear:hover { color: var(--danger); }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+  #log-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  #log-body::-webkit-scrollbar { width: 4px; }
+  #log-body::-webkit-scrollbar-track { background: transparent; }
+  #log-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
+  .log-entry {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    animation: slideIn 0.2s ease;
+    line-height: 1.4;
+  }
+  @keyframes slideIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: white;
-        }
+  .log-time { color: var(--text-dim); font-size: 10px; white-space: nowrap; }
+  .log-type { font-weight: 600; font-size: 10px; white-space: nowrap; }
+  .log-msg { color: var(--text-muted); word-break: break-all; }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+  .type-focus { color: #60a5fa; }
+  .type-blur { color: #f472b6; }
+  .type-click { color: var(--accent); }
+  .type-mousedown { color: #a78bfa; }
+  .type-hover { color: var(--accent3); }
+  .type-submit { color: #34d399; }
+  .type-scroll { color: #fb923c; }
+  .type-dom { color: #e879f9; }
+  .type-nav { color: #38bdf8; }
+  .type-shadow { color: #f87171; }
+  .type-iframe { color: #86efac; }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+  /* ─── MAIN CONTENT ─── */
+  main {
+    padding: 32px;
+    padding-bottom: 240px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    gap: 24px;
+  }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+  /* ─── SECTION CARDS ─── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .section-head {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+  }
+  .section-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .badge-blue { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+  .badge-green { background: rgba(52,211,153,0.15); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+  .badge-purple { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+  .badge-amber { background: rgba(245,158,11,0.15); color: var(--accent3); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-pink { background: rgba(244,114,182,0.15); color: #f472b6; border: 1px solid rgba(244,114,182,0.3); }
+  .badge-cyan { background: rgba(0,255,204,0.15); color: var(--accent); border: 1px solid rgba(0,255,204,0.3); }
+  .badge-red { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+  .badge-lime { background: rgba(134,239,172,0.15); color: #86efac; border: 1px solid rgba(134,239,172,0.3); }
 
-        .password-hint {
-            font-size: 0.8rem;
-            color: #999;
-            margin-top: 5px;
-        }
+  .section-title {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .section-body { padding: 20px; }
 
-        .submit-btn, .btn-primary {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
+  /* ─── INPUTS ─── */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
 
-        .submit-btn:hover, .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
+  input[type=text], input[type=email], input[type=password], input[type=number], select, textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,255,204,0.12);
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-dim); }
+  select option { background: var(--surface2); }
 
-        .submit-btn:active, .btn-primary:active {
-            transform: translateY(0);
-        }
+  /* ─── BUTTONS ─── */
+  .btn-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: #00e6b8; }
+  .btn-primary:active { transform: scale(0.97); }
 
-        .btn-secondary {
-            width: 100%;
-            padding: 12px;
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .btn-outline:hover { background: rgba(0,255,204,0.08); }
 
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
+  .btn-purple {
+    background: var(--accent2);
+    color: #fff;
+    border-color: var(--accent2);
+  }
+  .btn-purple:hover { background: #6d28d9; }
 
-        .btn-success {
-            width: 100%;
-            padding: 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
+  .btn-amber {
+    background: var(--accent3);
+    color: #000;
+    border-color: var(--accent3);
+  }
+  .btn-amber:hover { background: #d97706; }
 
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-        }
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.08); }
 
-        .btn-danger {
-            width: 100%;
-            padding: 12px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text-muted);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
 
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-        }
+  /* ─── HOVER ZONE ─── */
+  .hover-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+  }
+  .hover-card {
+    padding: 20px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+    cursor: default;
+    transition: all 0.25s;
+    background: var(--bg);
+  }
+  .hover-card:hover {
+    border-color: var(--accent3);
+    background: rgba(245,158,11,0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(245,158,11,0.15);
+  }
+  .hover-icon { font-size: 22px; margin-bottom: 8px; }
+  .hover-label { font-size: 10px; color: var(--text-muted); }
 
-        .info-text {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
-        }
+  /* ─── SPA NAV ─── */
+  .spa-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .spa-tab {
+    padding: 7px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .spa-tab:hover { border-color: #38bdf8; color: #38bdf8; }
+  .spa-tab.active {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: rgba(56,189,248,0.08);
+  }
+  .spa-view {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    min-height: 80px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .spa-view .route-label {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
 
-        .link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #666;
-        }
+  /* ─── SCROLL TRACKER ─── */
+  .scroll-bar-wrap {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  #scroll-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    transition: width 0.1s;
+  }
+  .scroll-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+  }
+  .stat-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .stat-val { font-size: 18px; font-weight: 700; color: var(--accent); font-family: var(--sans); }
 
-        .link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
+  /* ─── FORM ─── */
+  .form-grid { display: grid; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent), #00b8ff);
+    color: #000;
+    border: none;
+    padding: 11px 24px;
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    width: 100%;
+    letter-spacing: 0.5px;
+  }
+  .submit-btn:hover { opacity: 0.9; }
+  .submit-btn:active { transform: scale(0.99); }
 
-        .link a:hover {
-            text-decoration: underline;
-        }
+  /* ─── DYNAMIC DOM ─── */
+  #dynamic-container {
+    min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .dyn-node {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn { from{opacity:0;transform:scale(0.6)} to{opacity:1;transform:scale(1)} }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-top: 15px;
-        }
+  /* ─── SHADOW DOM HOST ─── */
+  .shadow-host-wrap {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    background: var(--bg);
+  }
+  .shadow-note {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    font-style: italic;
+  }
 
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-            cursor: pointer;
-        }
+  /* ─── IFRAME ─── */
+  .iframe-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .iframe-bar {
+    background: var(--surface2);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .iframe-dot { width: 5px; height: 5px; border-radius: 50%; }
+  iframe {
+    display: block;
+    width: 100%;
+    height: 160px;
+    border: none;
+    background: #fff;
+  }
 
-        .checkbox-group label {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #666;
-            cursor: pointer;
-        }
+  /* ─── SCROLL CONTENT ─── */
+  .tall-section {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .scroll-milestone {
+    padding: 12px 16px;
+    border-left: 3px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .scroll-milestone.reached {
+    border-color: var(--accent);
+    color: var(--text);
+  }
 
-        .success-message, .alert {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+  /* toast */
+  #toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .alert-info {
-            background: #d1ecf1;
-            border-color: #bee5eb;
-            color: #0c5460;
-        }
-
-        .error {
-            border-color: #dc3545 !important;
-        }
-
-        .error-message {
-            color: #dc3545;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .dashboard-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 2px solid #e0e0e0;
-        }
-
-        .dashboard-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .user-info {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .user-info h2 {
-            margin-bottom: 5px;
-        }
-
-        .user-info p {
-            opacity: 0.9;
-            font-size: 0.9rem;
-        }
-
-        .rating-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 15px 0;
-        }
-
-        .star {
-            font-size: 2rem;
-            cursor: pointer;
-            color: #ddd;
-            transition: all 0.2s ease;
-        }
-
-        .star:hover,
-        .star.active {
-            color: #ffc107;
-            transform: scale(1.2);
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 1.6rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  @media (max-width: 700px) {
+    main { padding: 16px; padding-bottom: 240px; }
+    #log-panel { width: 100%; }
+    .form-row { grid-template-columns: 1fr; }
+    header { flex-wrap: wrap; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Registration View -->
-        <div id="registerView" class="view active">
-            <div class="header">
-                <h1>Hello, Let's Check it!</h1>
-                <p>Let's start now, just try to fill in the details carefully and correctly.</p>
-            </div>
 
-            <div class="note">
-                <strong>NOTE:-</strong>
-                Please enter a password that is at least 8 characters long.
-            </div>
+<div id="app">
 
-            <form id="registrationForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name *</label>
-                        <input type="text" id="firstName" name="firstName" required placeholder="John">
-                        <span class="error-message">Please enter your first name</span>
-                    </div>
+  <!-- HEADER + SPA NAV -->
+  <header>
+    <div class="logo">
+      ◈ TRIGGER.LAB <span>event testbed v1.0</span>
+    </div>
+    <nav class="nav-pills">
+      <a href="#sec-inputs" class="nav-pill">Inputs</a>
+      <a href="#sec-buttons" class="nav-pill">Buttons</a>
+      <a href="#sec-hover" class="nav-pill">Hover</a>
+      <a href="#sec-form" class="nav-pill">Form</a>
+      <a href="#sec-spa" class="nav-pill">SPA</a>
+      <a href="#sec-shadow" class="nav-pill">Shadow DOM</a>
+      <a href="#sec-iframe" class="nav-pill">iFrame</a>
+      <a href="#sec-dom" class="nav-pill">Dynamic DOM</a>
+      <a href="#sec-scroll" class="nav-pill">Scroll</a>
+    </nav>
+  </header>
 
-                    <div class="form-group">
-                        <label for="lastName">Last Name *</label>
-                        <input type="text" id="lastName" name="lastName" required placeholder="Doe">
-                        <span class="error-message">Please enter your last name</span>
-                    </div>
-                </div>
+  <main>
 
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required placeholder="john.doe@example.com">
-                    <span class="error-message">Please enter a valid email address</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 123-4567">
-                    <span class="error-message">Please enter your phone number</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password *</label>
-                    <input type="password" id="password" name="password" required minlength="8" placeholder="Enter password (min. 8 characters)">
-                    <p class="password-hint">Must be at least 8 characters long</p>
-                    <span class="error-message">Password must be at least 8 characters</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password *</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter password">
-                    <span class="error-message">Passwords do not match</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <textarea id="address" name="address" placeholder="Enter your address (optional)"></textarea>
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms">I agree to the Terms and Conditions *</label>
-                </div>
-
-                <button type="submit" class="submit-btn">Register Now</button>
-            </form>
-
-            <button class="btn-secondary" onclick="navigateTo('dashboard')">Go to Dashboard</button>
-
-            <p class="info-text">
-                After registering please check your email for a confirmation message.
-            </p>
-
-            <div class="link">
-                Already a registered user? <a onclick="navigateTo('login')">Click here</a>
-            </div>
-
-            <button class="btn-success" onclick="navigateTo('feedback')">Feedback Form</button>
+    <!-- ── 1. INPUTS (focus/blur) ── -->
+    <div class="section-card" id="sec-inputs">
+      <div class="section-head">
+        <span class="section-badge badge-blue">focus · blur</span>
+        <span class="section-title">Input Fields</span>
+      </div>
+      <div class="section-body">
+        <div class="input-grid">
+          <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="inp-name" placeholder="John Doe" data-selector="#inp-name">
+          </div>
+          <div class="field">
+            <label>Email Address</label>
+            <input type="email" id="inp-email" placeholder="john@example.com" data-selector="#inp-email">
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="inp-pass" placeholder="••••••••" data-selector="#inp-pass">
+          </div>
+          <div class="field">
+            <label>Phone Number</label>
+            <input type="text" id="inp-phone" placeholder="+91 9999999999" data-selector="#inp-phone">
+          </div>
+          <div class="field">
+            <label>Age</label>
+            <input type="number" id="inp-age" placeholder="25" data-selector="#inp-age">
+          </div>
+          <div class="field">
+            <label>Country</label>
+            <select id="sel-country" data-selector="#sel-country">
+              <option value="">— select —</option>
+              <option>India</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Germany</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column: 1/-1;">
+            <label>Message / Notes</label>
+            <textarea id="inp-message" rows="3" placeholder="Type something..." data-selector="#inp-message"></textarea>
+          </div>
         </div>
-
-        <!-- Login View -->
-        <div id="loginView" class="view">
-            <div class="header">
-                <h1>Welcome Back!</h1>
-                <p>Please login to your account to continue.</p>
-            </div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email Address *</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required placeholder="john.doe@example.com">
-                    <span class="error-message">Please enter a valid email address</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="loginPassword">Password *</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required placeholder="Enter your password">
-                    <span class="error-message">Please enter your password</span>
-                </div>
-
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
-
-            <button class="btn-secondary" onclick="navigateTo('dashboard')">Go to Dashboard</button>
-
-            <div class="link">
-                Don't have an account? <a onclick="navigateTo('register')">Register here</a>
-            </div>
-
-            <div class="link">
-                <a onclick="navigateTo('feedback')">Give us feedback</a>
-            </div>
-        </div>
-
-        <!-- Dashboard View -->
-        <div id="dashboardView" class="view">
-            <div class="header">
-                <h1>Dashboard</h1>
-                <p>Welcome to your personal dashboard</p>
-            </div>
-
-            <div class="user-info">
-                <h2 id="dashboardUserName">User Dashboard</h2>
-                <p id="dashboardUserEmail">user@example.com</p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>📊 Your Statistics</h3>
-                <p>Account Status: <strong>Active</strong></p>
-                <p>Member Since: <strong>October 2025</strong></p>
-                <p>Total Activities: <strong>12</strong></p>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>🎯 Quick Actions</h3>
-                <p>Explore the various sections of our application using the navigation buttons below.</p>
-            </div>
-
-            <button class="btn-primary" onclick="navigateTo('register')">New Registration</button>
-            <button class="btn-secondary" onclick="navigateTo('feedback')">Share Feedback</button>
-            <button class="btn-danger" onclick="logout()">Logout</button>
-        </div>
-
-        <!-- Feedback View -->
-        <div id="feedbackView" class="view">
-            <div class="header">
-                <h1>📝 Feedback Form</h1>
-                <p>We'd love to hear your thoughts and suggestions!</p>
-            </div>
-
-            <form id="feedbackForm">
-                <div class="form-group">
-                    <label for="feedbackName">Your Name *</label>
-                    <input type="text" id="feedbackName" name="feedbackName" required placeholder="Enter your name">
-                </div>
-
-                <div class="form-group">
-                    <label for="feedbackEmail">Email Address *</label>
-                    <input type="email" id="feedbackEmail" name="feedbackEmail" required placeholder="your.email@example.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="feedbackCategory">Category *</label>
-                    <select id="feedbackCategory" name="feedbackCategory" required>
-                        <option value="">Select a category</option>
-                        <option value="bug">Bug Report</option>
-                        <option value="feature">Feature Request</option>
-                        <option value="improvement">Improvement</option>
-                        <option value="general">General Feedback</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Rate Your Experience *</label>
-                    <div class="rating-group">
-                        <span class="star" data-rating="1" onclick="setRating(1)">★</span>
-                        <span class="star" data-rating="2" onclick="setRating(2)">★</span>
-                        <span class="star" data-rating="3" onclick="setRating(3)">★</span>
-                        <span class="star" data-rating="4" onclick="setRating(4)">★</span>
-                        <span class="star" data-rating="5" onclick="setRating(5)">★</span>
-                    </div>
-                    <input type="hidden" id="rating" name="rating" value="0">
-                </div>
-
-                <div class="form-group">
-                    <label for="feedbackMessage">Your Feedback *</label>
-                    <textarea id="feedbackMessage" name="feedbackMessage" required placeholder="Tell us what you think..." style="min-height: 120px;"></textarea>
-                </div>
-
-                <button type="submit" class="btn-primary">Submit Feedback</button>
-            </form>
-
-            <button class="btn-secondary" onclick="navigateTo('dashboard')">Back to Dashboard</button>
-            <button class="btn-secondary" onclick="navigateTo('register')">Go to Registration</button>
-        </div>
+      </div>
     </div>
 
-    <script>
-        // In-memory user data
-        let userData = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            address: ''
-        };
-        let currentRating = 0;
+    <!-- ── 2. BUTTONS ── -->
+    <div class="section-card" id="sec-buttons">
+      <div class="section-head">
+        <span class="section-badge badge-cyan">click · mousedown</span>
+        <span class="section-title">Buttons</span>
+      </div>
+      <div class="section-body">
+        <div class="btn-grid">
+          <button class="btn btn-primary" id="btn-primary" data-selector="#btn-primary">▶ Primary Action</button>
+          <button class="btn btn-outline" id="btn-outline" data-selector="#btn-outline">◈ Outline</button>
+          <button class="btn btn-purple" id="btn-purple" data-selector="#btn-purple">⬡ Purple</button>
+          <button class="btn btn-amber" id="btn-amber" data-selector="#btn-amber">⚡ Warning</button>
+          <button class="btn btn-danger" id="btn-danger" data-selector="#btn-danger">✕ Danger</button>
+          <button class="btn btn-ghost" id="btn-ghost" data-selector="#btn-ghost">○ Ghost</button>
+          <button class="btn btn-outline" id="btn-disabled" disabled style="opacity:0.35;cursor:not-allowed;">◌ Disabled</button>
+        </div>
+      </div>
+    </div>
 
-        // Navigation function with URL routing
-        function navigateTo(viewName) {
-            // Update URL without page reload
-            history.pushState({ view: viewName }, '', `#${viewName}`);
-            
-            // Render the view
-            renderView(viewName);
-        }
+    <!-- ── 3. HOVER ── -->
+    <div class="section-card" id="sec-hover">
+      <div class="section-head">
+        <span class="section-badge badge-amber">mouseover · mouseleave</span>
+        <span class="section-title">Hover Elements</span>
+      </div>
+      <div class="section-body">
+        <div class="hover-grid">
+          <div class="hover-card" id="hover-1" data-selector="#hover-1">
+            <div class="hover-icon">🧪</div>
+            <div class="hover-label">Test Lab</div>
+          </div>
+          <div class="hover-card" id="hover-2" data-selector="#hover-2">
+            <div class="hover-icon">🎯</div>
+            <div class="hover-label">Target</div>
+          </div>
+          <div class="hover-card" id="hover-3" data-selector="#hover-3">
+            <div class="hover-icon">⚡</div>
+            <div class="hover-label">Trigger</div>
+          </div>
+          <div class="hover-card" id="hover-4" data-selector="#hover-4">
+            <div class="hover-icon">🔍</div>
+            <div class="hover-label">Inspect</div>
+          </div>
+          <div class="hover-card" id="hover-5" data-selector="#hover-5">
+            <div class="hover-icon">📡</div>
+            <div class="hover-label">Signal</div>
+          </div>
+          <div class="hover-card" id="hover-6" data-selector="#hover-6">
+            <div class="hover-icon">🛰️</div>
+            <div class="hover-label">Orbit</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        // Render view function
-        function renderView(viewName) {
-            // Hide all views
-            document.querySelectorAll('.view').forEach(view => {
-                view.classList.remove('active');
-            });
+    <!-- ── 4. FORM SUBMIT ── -->
+    <div class="section-card" id="sec-form">
+      <div class="section-head">
+        <span class="section-badge badge-green">submit</span>
+        <span class="section-title">Form Submit</span>
+      </div>
+      <div class="section-body">
+        <form id="test-form" novalidate>
+          <div class="form-grid">
+            <div class="form-row">
+              <div class="field">
+                <label>First Name</label>
+                <input type="text" id="form-fname" placeholder="First" data-selector="#form-fname">
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                <input type="text" id="form-lname" placeholder="Last" data-selector="#form-lname">
+              </div>
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="form-email" placeholder="your@email.com" data-selector="#form-email">
+            </div>
+            <div class="field">
+              <label>Plan</label>
+              <select id="form-plan" data-selector="#form-plan">
+                <option value="">— choose plan —</option>
+                <option>Free</option>
+                <option>Pro</option>
+                <option>Enterprise</option>
+              </select>
+            </div>
+            <button type="submit" class="submit-btn" id="form-submit" data-selector="#form-submit">
+              ▶ Submit Form
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-            // Show selected view
-            const targetView = document.getElementById(viewName + 'View');
-            if (targetView) {
-                targetView.classList.add('active');
-                // Trigger animation
-                targetView.style.animation = 'none';
-                setTimeout(() => {
-                    targetView.style.animation = 'fadeIn 0.4s ease';
-                }, 10);
-            }
+    <!-- ── 5. SPA NAVIGATION ── -->
+    <div class="section-card" id="sec-spa">
+      <div class="section-head">
+        <span class="section-badge badge-blue">pushState · popState</span>
+        <span class="section-title">SPA Navigation (No Page Reload)</span>
+      </div>
+      <div class="section-body">
+        <div class="spa-nav">
+          <button class="spa-tab active" data-route="/" data-path="/">Home</button>
+          <button class="spa-tab" data-route="/dashboard" data-path="/dashboard">Dashboard</button>
+          <button class="spa-tab" data-route="/products" data-path="/products">Products</button>
+          <button class="spa-tab" data-route="/settings" data-path="/settings">Settings</button>
+          <button class="spa-tab" data-route="/profile" data-path="/profile">Profile</button>
+        </div>
+        <div class="spa-view" id="spa-view">
+          <div class="route-label">🏠 Home</div>
+          <div>You are on the home page. URL: <code style="color:var(--accent)">/</code>. Navigate above — no page reload occurs, history.pushState fires.</div>
+        </div>
+      </div>
+    </div>
 
-            // Update dashboard with user data if navigating to dashboard
-            if (viewName === 'dashboard' && userData.email) {
-                document.getElementById('dashboardUserName').textContent = 
-                    `${userData.firstName} ${userData.lastName}`;
-                document.getElementById('dashboardUserEmail').textContent = userData.email;
-            }
-        }
+    <!-- ── 6. SHADOW DOM ── -->
+    <div class="section-card" id="sec-shadow">
+      <div class="section-head">
+        <span class="section-badge badge-red">Shadow DOM</span>
+        <span class="section-title">Shadow DOM Elements</span>
+      </div>
+      <div class="section-body">
+        <div class="shadow-host-wrap">
+          <!-- Shadow host 1: input -->
+          <div id="shadow-host-input"></div>
+          <!-- Shadow host 2: button -->
+          <div id="shadow-host-btn" style="margin-top:12px;"></div>
+          <!-- Shadow host 3: custom card -->
+          <div id="shadow-host-card" style="margin-top:12px;"></div>
+          <p class="shadow-note">⚑ Elements above are inside closed/open Shadow DOM. Standard event listeners on document may NOT capture these via event.target — you need composedPath() or the sel operator on the shadow root.</p>
+        </div>
+      </div>
+    </div>
 
-        // Handle browser back/forward buttons
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.view) {
-                renderView(event.state.view);
-            } else {
-                // Handle initial load or no state
-                const hash = window.location.hash.substring(1) || 'register';
-                renderView(hash);
-            }
-        });
+    <!-- ── 7. IFRAME ── -->
+    <div class="section-card" id="sec-iframe">
+      <div class="section-head">
+        <span class="section-badge badge-lime">iFrame</span>
+        <span class="section-title">Embedded iFrame Elements</span>
+      </div>
+      <div class="section-body">
+        <div class="iframe-wrap">
+          <div class="iframe-bar">
+            <div class="iframe-dot" style="background:#f87171"></div>
+            <div class="iframe-dot" style="background:#fbbf24"></div>
+            <div class="iframe-dot" style="background:#34d399"></div>
+            <span style="margin-left:6px;">iframe://sandbox — same-origin embedded frame</span>
+          </div>
+          <iframe id="test-iframe" srcdoc="" title="Test iFrame"></iframe>
+        </div>
+        <p style="font-size:10px;color:var(--text-dim);margin-top:8px;font-style:italic;">
+          ⚑ Events inside iFrame cannot be observed from parent via normal addEventListener unless same-origin. Cross-origin iFrames are invisible to parent document selectors.
+        </p>
+      </div>
+    </div>
 
-        // Handle initial page load based on URL hash
-        window.addEventListener('DOMContentLoaded', function() {
-            const hash = window.location.hash.substring(1);
-            if (hash && ['register', 'login', 'dashboard', 'feedback'].includes(hash)) {
-                renderView(hash);
-            } else {
-                // Default to register view and update URL
-                history.replaceState({ view: 'register' }, '', '#register');
-            }
-        });
+    <!-- ── 8. DYNAMIC DOM ── -->
+    <div class="section-card" id="sec-dom">
+      <div class="section-head">
+        <span class="section-badge badge-purple">MutationObserver</span>
+        <span class="section-title">Dynamic DOM Updates</span>
+      </div>
+      <div class="section-body">
+        <div class="btn-grid" style="margin-bottom:14px;">
+          <button class="btn btn-purple" id="dom-add" data-selector="#dom-add">+ Add Node</button>
+          <button class="btn btn-danger" id="dom-remove" data-selector="#dom-remove">− Remove Last</button>
+          <button class="btn btn-ghost" id="dom-clear" data-selector="#dom-clear">✕ Clear All</button>
+          <button class="btn btn-amber" id="dom-update" data-selector="#dom-update">↻ Update Random</button>
+        </div>
+        <div id="dynamic-container">
+          <span style="font-size:11px;color:var(--text-dim);padding:6px 0;">No dynamic nodes yet — click Add Node.</span>
+        </div>
+      </div>
+    </div>
 
-        // Registration Form Handler
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Reset previous errors
-            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    <!-- ── 9. SCROLL TRACKING ── -->
+    <div class="section-card" id="sec-scroll">
+      <div class="section-head">
+        <span class="section-badge badge-pink">scroll</span>
+        <span class="section-title">Page Scroll Tracking</span>
+      </div>
+      <div class="section-body">
+        <div class="scroll-bar-wrap">
+          <div id="scroll-bar"></div>
+        </div>
+        <div class="scroll-stats">
+          <div class="stat-box">
+            <div class="stat-label">Scroll %</div>
+            <div class="stat-val" id="stat-pct">0%</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">ScrollY (px)</div>
+            <div class="stat-val" id="stat-y">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Direction</div>
+            <div class="stat-val" id="stat-dir" style="font-size:14px;">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Events fired</div>
+            <div class="stat-val" id="stat-count">0</div>
+          </div>
+        </div>
+        <div class="tall-section" style="margin-top:14px;">
+          <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Scroll Milestones</div>
+          <div class="scroll-milestone" id="m25">25% — Quarter scroll reached</div>
+          <div class="scroll-milestone" id="m50">50% — Halfway through page</div>
+          <div class="scroll-milestone" id="m75">75% — Three-quarters reached</div>
+          <div class="scroll-milestone" id="m90">90% — Near bottom</div>
+          <div class="scroll-milestone" id="m100">100% — Bottom of page reached</div>
+        </div>
+      </div>
+    </div>
 
-            let isValid = true;
+  </main>
+</div>
 
-            // Validate first name
-            const firstName = document.getElementById('firstName');
-            if (firstName.value.trim() === '') {
-                showError(firstName);
-                isValid = false;
-            }
+<!-- EVENT LOG PANEL -->
+<div id="log-panel">
+  <div class="log-header">
+    <div class="log-title"><div class="log-dot"></div>LIVE EVENT LOG</div>
+    <button id="log-clear">clear</button>
+  </div>
+  <div id="log-body">
+    <div class="log-entry">
+      <span class="log-time">00:00:00</span>
+      <span class="log-type type-dom">INIT</span>
+      <span class="log-msg">Testbed ready. Interact with any element.</span>
+    </div>
+  </div>
+</div>
 
-            // Validate last name
-            const lastName = document.getElementById('lastName');
-            if (lastName.value.trim() === '') {
-                showError(lastName);
-                isValid = false;
-            }
+<div id="toast"></div>
 
-            // Validate email
-            const email = document.getElementById('email');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                showError(email);
-                isValid = false;
-            }
+<script>
+// ─── UTILITIES ───────────────────────────────────────────────
+const logBody = document.getElementById('log-body');
+const colors = {
+  focus:'type-focus', blur:'type-blur', click:'type-click',
+  mousedown:'type-mousedown', hover:'type-hover', submit:'type-submit',
+  scroll:'type-scroll', dom:'type-dom', nav:'type-nav',
+  shadow:'type-shadow', iframe:'type-iframe'
+};
 
-            // Validate phone
-            const phone = document.getElementById('phone');
-            if (phone.value.trim() === '') {
-                showError(phone);
-                isValid = false;
-            }
+function now() {
+  const d = new Date();
+  return [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map(n => String(n).padStart(2,'0')).join(':');
+}
 
-            // Validate password
-            const password = document.getElementById('password');
-            if (password.value.length < 8) {
-                showError(password);
-                isValid = false;
-            }
+function log(type, msg) {
+  const cls = colors[type] || 'type-dom';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${now()}</span><span class="log-type ${cls}">${type.toUpperCase()}</span><span class="log-msg">${msg}</span>`;
+  logBody.appendChild(entry);
+  logBody.scrollTop = logBody.scrollHeight;
+  // Trim to 80 entries
+  while (logBody.children.length > 80) logBody.removeChild(logBody.firstChild);
+}
 
-            // Validate confirm password
-            const confirmPassword = document.getElementById('confirmPassword');
-            if (password.value !== confirmPassword.value) {
-                showError(confirmPassword);
-                isValid = false;
-            }
+document.getElementById('log-clear').addEventListener('click', () => {
+  logBody.innerHTML = '';
+  log('dom', 'Log cleared.');
+});
 
-            // Validate terms
-            const terms = document.getElementById('terms');
-            if (!terms.checked) {
-                alert('Please agree to the Terms and Conditions');
-                isValid = false;
-            }
+function getSel(el) {
+  if (!el) return 'unknown';
+  return el.dataset?.selector || el.id && `#${el.id}` || el.tagName.toLowerCase();
+}
 
-            if (isValid) {
-                // Store user data
-                userData = {
-                    firstName: firstName.value,
-                    lastName: lastName.value,
-                    email: email.value,
-                    phone: phone.value,
-                    address: document.getElementById('address').value
-                };
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+}
 
-                alert('Registration successful! Check your email for confirmation.');
-                this.reset();
-                
-                // Navigate to dashboard
-                setTimeout(() => {
-                    navigateTo('dashboard');
-                }, 1000);
-            }
-        });
+// ─── 1. INPUTS: focus / blur ─────────────────────────────────
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('focus', e => {
+    log('focus', `focus → ${getSel(e.target)} | operator: sel | target is DOM node, NOT string`);
+  });
+  el.addEventListener('blur', e => {
+    const val = e.target.value ? `value="${e.target.value.substring(0,20)}"` : 'empty';
+    log('blur', `blur → ${getSel(e.target)} | ${val}`);
+  });
+});
 
-        // Login Form Handler
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+// ─── 2. BUTTONS: click / mousedown ───────────────────────────
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('mousedown', e => {
+    log('mousedown', `mousedown → ${getSel(e.target)}`);
+  });
+  btn.addEventListener('click', e => {
+    if (btn.disabled) return;
+    log('click', `click → ${getSel(e.target)}`);
+    showToast(`Clicked: ${getSel(e.target)}`);
+  });
+});
 
-            if (email && password) {
-                // Simulate login
-                userData.email = email;
-                alert('Login successful! Welcome back.');
-                this.reset();
-                navigateTo('dashboard');
-            }
-        });
+// ─── 3. HOVER ────────────────────────────────────────────────
+let hoverThrottle = null;
+document.querySelectorAll('.hover-card').forEach(card => {
+  card.addEventListener('mouseover', e => {
+    clearTimeout(hoverThrottle);
+    hoverThrottle = setTimeout(() => {
+      log('hover', `mouseover → ${getSel(e.currentTarget)}`);
+    }, 80);
+  });
+  card.addEventListener('mouseleave', e => {
+    log('hover', `mouseleave → ${getSel(e.currentTarget)}`);
+  });
+});
 
-        // Feedback Form Handler
-        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (currentRating === 0) {
-                alert('Please rate your experience');
-                return;
-            }
+// ─── 4. FORM SUBMIT ──────────────────────────────────────────
+document.getElementById('test-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = {};
+  new FormData(e.target).forEach((v,k) => data[k]=v);
+  log('submit', `form#test-form submitted | ${JSON.stringify(data).substring(0,60)}`);
+  showToast('✓ Form submitted (prevented)');
+});
 
-            alert('Thank you for your feedback! We appreciate your input.');
-            this.reset();
-            currentRating = 0;
-            document.querySelectorAll('.star').forEach(star => {
-                star.classList.remove('active');
-            });
-            
-            setTimeout(() => {
-                navigateTo('dashboard');
-            }, 1000);
-        });
+// ─── 5. SPA NAVIGATION ───────────────────────────────────────
+const spaRoutes = {
+  '/': { icon:'🏠', label:'Home', desc:'Landing page of the single-page app.' },
+  '/dashboard': { icon:'📊', label:'Dashboard', desc:'Analytics and metrics overview. Simulated push to /dashboard.' },
+  '/products': { icon:'📦', label:'Products', desc:'Product listing page. No reload — history.pushState fired.' },
+  '/settings': { icon:'⚙️', label:'Settings', desc:'User preferences and configuration.' },
+  '/profile': { icon:'👤', label:'Profile', desc:'User profile page. Triggered via client-side routing.' },
+};
 
-        // Rating System
-        function setRating(rating) {
-            currentRating = rating;
-            document.getElementById('rating').value = rating;
-            
-            document.querySelectorAll('.star').forEach((star, index) => {
-                if (index < rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
-            });
-        }
+function renderSPA(route) {
+  const r = spaRoutes[route] || spaRoutes['/'];
+  document.getElementById('spa-view').innerHTML = `
+    <div class="route-label">${r.icon} ${r.label}</div>
+    <div>Current URL: <code style="color:var(--accent)">${route}</code> — ${r.desc}</div>
+  `;
+  document.querySelectorAll('.spa-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.route === route);
+  });
+}
 
-        // Logout Function
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                userData = {
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    phone: '',
-                    address: ''
-                };
-                alert('You have been logged out successfully.');
-                navigateTo('login');
-            }
-        }
+document.querySelectorAll('.spa-tab').forEach(tab => {
+  tab.addEventListener('click', e => {
+    const route = tab.dataset.route;
+    const path = tab.dataset.path;
+    history.pushState({ route }, '', path);
+    renderSPA(route);
+    log('nav', `pushState → route="${route}" | URL changed to ${path} (no reload)`);
+    showToast(`Navigated to ${path}`);
+  });
+});
+window.addEventListener('popstate', e => {
+  const route = e.state?.route || '/';
+  renderSPA(route);
+  log('nav', `popstate → back/forward to ${route}`);
+});
 
-        // Error Display Function
-        function showError(element) {
-            element.classList.add('error');
-            const errorMsg = element.parentElement.querySelector('.error-message');
-            if (errorMsg) {
-                errorMsg.style.display = 'block';
-            }
-        }
+// ─── 6. SHADOW DOM ───────────────────────────────────────────
+// Shadow host: input
+(function() {
+  const host = document.getElementById('shadow-host-input');
+  const shadow = host.attachShadow({ mode: 'open' });
+  shadow.innerHTML = `
+    <style>
+      :host { display: block; }
+      label { font: 10px/1 'JetBrains Mono',monospace; color:#64748b; letter-spacing:.5px; text-transform:uppercase; display:block; margin-bottom:5px; }
+      input {
+        background:#0a0a0f; border:1px solid #2a2a3a; color:#e2e8f0;
+        font: 12px 'JetBrains Mono',monospace; padding:9px 12px; border-radius:8px;
+        outline:none; width:100%; box-sizing:border-box; transition:border-color .2s;
+      }
+      input:focus { border-color:#00ffcc; box-shadow:0 0 0 2px rgba(0,255,204,.12); }
+      .tag { font-size:9px; color:#f87171; font-family:monospace; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); padding:2px 7px; border-radius:3px; margin-bottom:8px; display:inline-block; }
+    </style>
+    <div class="tag">⚑ INSIDE SHADOW DOM</div>
+    <label>Shadow Input (focus/blur here)</label>
+    <input type="text" id="shadow-input" placeholder="Type inside Shadow DOM…">
+  `;
+  const inp = shadow.getElementById('shadow-input');
+  inp.addEventListener('focus', () => log('shadow', 'focus → #shadow-input (Shadow DOM) | event.composedPath() needed to trace'));
+  inp.addEventListener('blur', () => log('shadow', 'blur → #shadow-input (Shadow DOM)'));
+})();
 
-        // Real-time validation for password match
-        document.getElementById('confirmPassword').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-            const errorMsg = this.parentElement.querySelector('.error-message');
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.classList.add('error');
-                errorMsg.style.display = 'block';
-            } else {
-                this.classList.remove('error');
-                errorMsg.style.display = 'none';
-            }
-        });
+// Shadow host: button
+(function() {
+  const host = document.getElementById('shadow-host-btn');
+  const shadow = host.attachShadow({ mode: 'open' });
+  shadow.innerHTML = `
+    <style>
+      :host { display:block; }
+      .tag { font-size:9px; color:#f87171; font-family:monospace; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); padding:2px 7px; border-radius:3px; margin-bottom:8px; display:inline-block; }
+      button {
+        background:#7c3aed; color:#fff; border:none; padding:9px 18px;
+        border-radius:8px; font:600 12px 'JetBrains Mono',monospace;
+        cursor:pointer; transition:background .15s;
+      }
+      button:hover { background:#6d28d9; }
+    </style>
+    <div class="tag">⚑ INSIDE SHADOW DOM</div><br>
+    <button id="shadow-btn">Click Shadow Button</button>
+  `;
+  shadow.getElementById('shadow-btn').addEventListener('click', () => {
+    log('shadow', 'click → #shadow-btn (Shadow DOM) | event.target from outside = shadow host, not button');
+  });
+  shadow.getElementById('shadow-btn').addEventListener('mousedown', () => {
+    log('shadow', 'mousedown → #shadow-btn (Shadow DOM)');
+  });
+})();
 
-        // Remove error on input
-        document.querySelectorAll('input, textarea, select').forEach(input => {
-            input.addEventListener('input', function() {
-                this.classList.remove('error');
-                const errorMsg = this.parentElement.querySelector('.error-message');
-                if (errorMsg) {
-                    errorMsg.style.display = 'none';
-                }
-            });
-        });
-    </script>
+// Shadow host: card with hover
+(function() {
+  const host = document.getElementById('shadow-host-card');
+  const shadow = host.attachShadow({ mode: 'open' });
+  shadow.innerHTML = `
+    <style>
+      :host { display:block; }
+      .tag { font-size:9px; color:#f87171; font-family:monospace; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); padding:2px 7px; border-radius:3px; margin-bottom:8px; display:inline-block; }
+      .card {
+        display:inline-flex; align-items:center; gap:10px;
+        background:#0a0a0f; border:1px dashed #f87171; border-radius:8px;
+        padding:12px 16px; cursor:default; transition:background .2s;
+      }
+      .card:hover { background:rgba(248,113,113,.06); }
+      span { font:12px 'JetBrains Mono',monospace; color:#e2e8f0; }
+    </style>
+    <div class="tag">⚑ INSIDE SHADOW DOM</div><br>
+    <div class="card" id="shadow-card">
+      <span>🔴 Shadow Hover Card — mouseover me</span>
+    </div>
+  `;
+  const card = shadow.getElementById('shadow-card');
+  card.addEventListener('mouseover', () => log('shadow', 'mouseover → #shadow-card (Shadow DOM)'));
+  card.addEventListener('mouseleave', () => log('shadow', 'mouseleave → #shadow-card (Shadow DOM)'));
+})();
+
+// ─── 7. IFRAME ───────────────────────────────────────────────
+(function() {
+  const iframe = document.getElementById('test-iframe');
+  const iframeDoc = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'JetBrains Mono',monospace; }
+  body { background:#0f172a; color:#e2e8f0; padding:16px; font-size:12px; }
+  .tag { font-size:9px; color:#86efac; background:rgba(134,239,172,.1); border:1px solid rgba(134,239,172,.3); padding:2px 8px; border-radius:3px; display:inline-block; margin-bottom:12px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  input { background:#0a0a0f; border:1px solid #334155; color:#e2e8f0; padding:7px 10px; border-radius:6px; font-family:inherit; font-size:11px; outline:none; }
+  input:focus { border-color:#86efac; }
+  button { background:#064e3b; color:#86efac; border:1px solid #065f46; padding:7px 14px; border-radius:6px; font-family:inherit; font-size:11px; cursor:pointer; }
+  button:hover { background:#065f46; }
+  #iframe-log { margin-top:12px; font-size:10px; color:#475569; min-height:20px; }
+</style>
+</head>
+<body>
+<div class="tag">⚑ INSIDE IFRAME (same-origin srcdoc)</div>
+<div>Events here are scoped to the iframe context. Parent cannot observe via document.addEventListener unless same-origin + explicit access.</div>
+<div class="row">
+  <input type="text" id="if-input" placeholder="Focus me inside iFrame">
+  <button id="if-btn">Click inside iFrame</button>
+</div>
+<div id="iframe-log">Waiting for events…</div>
+<script>
+  const il = document.getElementById('iframe-log');
+  document.getElementById('if-input').addEventListener('focus', () => {
+    il.textContent = '⚡ focus fired on #if-input inside iFrame';
+    window.parent.postMessage({type:'iframe', event:'focus', sel:'#if-input'}, '*');
+  });
+  document.getElementById('if-input').addEventListener('blur', () => {
+    il.textContent = '⚡ blur fired on #if-input inside iFrame';
+    window.parent.postMessage({type:'iframe', event:'blur', sel:'#if-input'}, '*');
+  });
+  document.getElementById('if-btn').addEventListener('click', () => {
+    il.textContent = '⚡ click fired on #if-btn inside iFrame';
+    window.parent.postMessage({type:'iframe', event:'click', sel:'#if-btn'}, '*');
+  });
+  document.getElementById('if-btn').addEventListener('mousedown', () => {
+    window.parent.postMessage({type:'iframe', event:'mousedown', sel:'#if-btn'}, '*');
+  });
+<\/script>
+</body>
+</html>`;
+  iframe.srcdoc = iframeDoc;
+  window.addEventListener('message', e => {
+    if (e.data?.type === 'iframe') {
+      log('iframe', `${e.data.event} → ${e.data.sel} (inside iFrame, received via postMessage)`);
+    }
+  });
+})();
+
+// ─── 8. DYNAMIC DOM ──────────────────────────────────────────
+let dynCount = 0;
+const palettes = [
+  {bg:'rgba(0,255,204,.12)',color:'#00ffcc',border:'rgba(0,255,204,.3)'},
+  {bg:'rgba(124,58,237,.15)',color:'#a78bfa',border:'rgba(167,139,250,.3)'},
+  {bg:'rgba(245,158,11,.12)',color:'#fbbf24',border:'rgba(251,191,36,.3)'},
+  {bg:'rgba(244,114,182,.12)',color:'#f472b6',border:'rgba(244,114,182,.3)'},
+  {bg:'rgba(52,211,153,.12)',color:'#34d399',border:'rgba(52,211,153,.3)'},
+  {bg:'rgba(248,113,113,.12)',color:'#f87171',border:'rgba(248,113,113,.3)'},
+];
+
+const dynContainer = document.getElementById('dynamic-container');
+
+// MutationObserver to log DOM changes
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(m => {
+    m.addedNodes.forEach(n => {
+      if (n.nodeType === 1) log('dom', `MutationObserver: node added → ${n.id || n.tagName}`);
+    });
+    m.removedNodes.forEach(n => {
+      if (n.nodeType === 1) log('dom', `MutationObserver: node removed → ${n.id || n.tagName}`);
+    });
+    if (m.type === 'characterData') log('dom', 'MutationObserver: text content changed');
+    if (m.type === 'attributes') log('dom', `MutationObserver: attribute "${m.attributeName}" changed on ${m.target.id}`);
+  });
+});
+observer.observe(dynContainer, { childList: true, subtree: true, characterData: true, attributes: true });
+
+document.getElementById('dom-add').addEventListener('click', () => {
+  // Remove placeholder if first node
+  if (dynContainer.querySelector('span')) dynContainer.innerHTML = '';
+  dynCount++;
+  const p = palettes[dynCount % palettes.length];
+  const node = document.createElement('div');
+  node.className = 'dyn-node';
+  node.id = `dyn-${dynCount}`;
+  node.dataset.selector = `#dyn-${dynCount}`;
+  node.style.cssText = `background:${p.bg};color:${p.color};border:1px solid ${p.border};`;
+  node.textContent = `node_${dynCount}`;
+  node.addEventListener('click', e => log('click', `click → ${getSel(e.currentTarget)} (dynamically added node)`));
+  dynContainer.appendChild(node);
+});
+
+document.getElementById('dom-remove').addEventListener('click', () => {
+  const last = dynContainer.querySelector('.dyn-node:last-child');
+  if (last) last.remove();
+  else log('dom', 'No dynamic nodes to remove.');
+});
+
+document.getElementById('dom-clear').addEventListener('click', () => {
+  const nodes = dynContainer.querySelectorAll('.dyn-node');
+  if (nodes.length) {
+    nodes.forEach(n => n.remove());
+    dynContainer.innerHTML = '<span style="font-size:11px;color:var(--text-dim);padding:6px 0;">No dynamic nodes yet — click Add Node.</span>';
+  }
+});
+
+document.getElementById('dom-update').addEventListener('click', () => {
+  const nodes = dynContainer.querySelectorAll('.dyn-node');
+  if (!nodes.length) { log('dom', 'No nodes to update.'); return; }
+  const target = nodes[Math.floor(Math.random() * nodes.length)];
+  const prev = target.textContent;
+  target.textContent = `node_${dynCount}_upd${Math.floor(Math.random()*99)}`;
+  target.setAttribute('data-updated', Date.now());
+  log('dom', `Updated text: "${prev}" → "${target.textContent}" on ${target.id}`);
+});
+
+// ─── 9. SCROLL TRACKING ──────────────────────────────────────
+let lastScrollY = 0;
+let scrollCount = 0;
+let scrollThrottle = null;
+const milestones = { m25: false, m50: false, m75: false, m90: false, m100: false };
+
+function getScrollPct() {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  return total <= 0 ? 100 : Math.round((window.scrollY / total) * 100);
+}
+
+window.addEventListener('scroll', () => {
+  const pct = getScrollPct();
+  const dir = window.scrollY > lastScrollY ? '↓ Down' : '↑ Up';
+  scrollCount++;
+
+  document.getElementById('scroll-bar').style.width = pct + '%';
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-y').textContent = Math.round(window.scrollY);
+  document.getElementById('stat-dir').textContent = dir;
+  document.getElementById('stat-count').textContent = scrollCount;
+
+  // Milestones
+  if (pct >= 25 && !milestones.m25) {
+    milestones.m25 = true;
+    document.getElementById('m25').classList.add('reached');
+    log('scroll', 'Milestone: 25% scroll depth reached');
+  }
+  if (pct >= 50 && !milestones.m50) {
+    milestones.m50 = true;
+    document.getElementById('m50').classList.add('reached');
+    log('scroll', 'Milestone: 50% scroll depth reached');
+  }
+  if (pct >= 75 && !milestones.m75) {
+    milestones.m75 = true;
+    document.getElementById('m75').classList.add('reached');
+    log('scroll', 'Milestone: 75% scroll depth reached');
+  }
+  if (pct >= 90 && !milestones.m90) {
+    milestones.m90 = true;
+    document.getElementById('m90').classList.add('reached');
+    log('scroll', 'Milestone: 90% scroll depth reached');
+  }
+  if (pct >= 100 && !milestones.m100) {
+    milestones.m100 = true;
+    document.getElementById('m100').classList.add('reached');
+    log('scroll', 'Milestone: 100% — bottom of page reached');
+  }
+
+  // Throttled raw scroll log
+  clearTimeout(scrollThrottle);
+  scrollThrottle = setTimeout(() => {
+    log('scroll', `scrollY=${Math.round(window.scrollY)}px | ${pct}% | ${dir}`);
+  }, 300);
+
+  lastScrollY = window.scrollY;
+}, { passive: true });
+
+// ─── INIT LOG ─────────────────────────────────────────────────
+log('dom', 'Shadow DOM hosts attached (open mode)');
+log('iframe', 'iFrame injected via srcdoc — postMessage bridge active');
+log('dom', 'MutationObserver watching #dynamic-container');
+log('scroll', 'Scroll listener active — milestones: 25/50/75/90/100%');
+</script>
 </body>
 </html>
